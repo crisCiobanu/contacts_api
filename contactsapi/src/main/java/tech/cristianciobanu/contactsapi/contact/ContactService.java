@@ -1,11 +1,10 @@
 package tech.cristianciobanu.contactsapi.contact;
 
 import org.springframework.stereotype.Service;
+import tech.cristianciobanu.contactsapi.skill.Skill;
+import tech.cristianciobanu.contactsapi.skill.SkillDto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ContactService {
@@ -20,51 +19,49 @@ public class ContactService {
     }
 
     public List<ContactDto> findAll() {
-        List<ContactDto> list = new ArrayList<>();
-        contactRepository.findAll().forEach(contact -> list.add(contactMapper.contactToContactDto(contact)));
-        return list;
+        List<ContactDto> contactList = new ArrayList<>();
+        contactRepository.findAll().forEach(contact -> contactList.add(contactMapper.contactToContactDto(contact)));
+        return contactList;
     }
 
-    public Optional<Contact> findById(UUID id) {
-        return contactRepository.findById(id);
+    public Optional<ContactDto> findById(UUID id) {
+        return contactRepository.findById(id).map(contactMapper::contactToContactDto);
     }
 
-    public Contact create(ContactDto contact) {
-        Contact copy = new Contact();
-        copy.setFirstName(contact.getFirstName());
-        copy.setLastName(contact.getLastName());
-        copy.setFullName(contact.getFullName());
-        copy.setAddress(contact.getAddress());
-        copy.setEmail(contact.getEmail());
-        copy.setPhoneNumber(contact.getPhoneNumber());
-        return contactRepository.save(copy);
+    public List<ContactDto> findAllByName(String name) {
+        List<ContactDto> contactList = new ArrayList<>();
+        contactRepository
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name)
+                .forEach(contact -> contactList.add(contactMapper.contactToContactDto(contact)));
+        return contactList;
     }
 
-    public Optional<Contact> update(UUID id, ContactDto newContact) {
-        Optional<Contact> foundContact = contactRepository.findById(id);
-        if (foundContact.isPresent()){
-            Contact contact = foundContact.get();
-            contact.setFirstName(newContact.getFirstName());
-            contact.setLastName(newContact.getLastName());
-            contact.setFullName(newContact.getFullName());
-            contact.setAddress(newContact.getAddress());
-            contact.setEmail(newContact.getEmail());
-            contact.setPhoneNumber(newContact.getPhoneNumber());
+    public ContactDto create(ContactDto contact) {
+        Contact createdContact = contactRepository.save(contactMapper.contactDtoToContact(contact));
+        return contactMapper.contactToContactDto(createdContact);
+    }
 
-        }
+    public Optional<ContactDto> update(UUID id, ContactDto updatedContact) {
         return contactRepository.findById(id)
-                .map(oldContact -> {
-                    oldContact.setFirstName(newContact.getFirstName());
-                    oldContact.setLastName(newContact.getLastName());
-                    oldContact.setFullName(newContact.getFullName());
-                    oldContact.setAddress(newContact.getAddress());
-                    oldContact.setEmail(newContact.getEmail());
-                    oldContact.setPhoneNumber(newContact.getPhoneNumber());
-                    return contactRepository.save(oldContact);
-                });
+                .map(foundContact -> {
+                    Contact newContact = updateContactWith(foundContact, updatedContact);
+                    return contactMapper.contactToContactDto(contactRepository.save(newContact));});
     }
 
     public void delete(UUID id) {
         contactRepository.deleteById(id);
+    }
+
+    private Contact updateContactWith(Contact oldContact, ContactDto newContact){
+        return new Contact(
+                oldContact.getId(),
+                newContact.getFirstName(),
+                newContact.getLastName(),
+                newContact.getFullName(),
+                newContact.getAddress(),
+                newContact.getEmail(),
+                newContact.getPhoneNumber(),
+                new HashSet<>(newContact.getSkills())
+        );
     }
 }

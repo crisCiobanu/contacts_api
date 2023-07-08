@@ -9,6 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface ContactRepository extends CrudRepository<Contact, UUID> {
-    List<Contact> findByFirstName(String firstName);
+    List<Contact> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstName, String lastName);
     List<Contact> findByEmail(String email);
 }

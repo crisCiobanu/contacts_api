@@ -1,7 +1,6 @@
 package tech.cristianciobanu.contactsapi.skill;
 
 import org.springframework.stereotype.Service;
-import tech.cristianciobanu.contactsapi.contact.ContactDto;
 
 import java.util.*;
 
@@ -31,8 +30,8 @@ public class SkillService {
         return skillList;
     }
 
-    public SkillDto create(SkillDto skillDto){
-        Skill createdSkill = skillRepository.save(skillMapper.skillDtoToSkill(skillDto));
+    public SkillDto create(SkillDto skill){
+        Skill createdSkill = skillRepository.save(skillMapper.skillDtoToSkill(skill));
         return skillMapper.skillToSkillDto(createdSkill);
     }
 
