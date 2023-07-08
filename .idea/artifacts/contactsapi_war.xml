@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="contactsapi:war">
+    <output-path>$PROJECT_DIR$/contactsapi/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>contactsapi</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="contactsapi-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="contactsapi:war exploded" />
+    </root>
+  </artifact>
+</component>

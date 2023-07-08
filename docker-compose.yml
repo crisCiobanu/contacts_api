@@ -1,0 +1,53 @@
+version: "3"
+services:
+
+#  svelte:
+#    container_name: svelte
+#    depends_on:
+#      - backend
+#    ports:
+#      - "8080:8080"
+#    build: ./svelte
+#    restart: always
+#    networks:
+#      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: super_secret_password
+      POSTGRES_USER: super_user
+    restart: always
+    networks:
+      - postgres
+
+#  pgadmin:
+#    links:
+#      - postgres:postgres
+#    container_name: pgadmin
+#    image: dpage/pgadmin4
+#    ports:
+#      - "5050:80"
+#    restart: always
+#    networks:
+#      - postgres
+
+#  backend:
+#    container_name: backend
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "3000:3000"
+#    env_file:
+#      - .env
+#    build: ./backend
+#    restart: always
+#    networks:
+#      - postgres
+
+networks:
+  postgres:
+    driver: bridge
