@@ -44,7 +44,7 @@ public class ContactController {
         return ResponseEntity.of(contact);
     }
 
-    @GetMapping("/{id}")
+    @PostMapping
     public ResponseEntity<ContactDto> createContact(@RequestBody ContactDto contact){
         try {
             ContactDto createdContact = contactService.create(contact);
