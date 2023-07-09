@@ -2,6 +2,9 @@ package tech.cristianciobanu.contactsapi.skill;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +21,12 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SkillDto {
     private UUID id;
+    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String name;
+    @NotNull
+    @NotBlank
     private SkillLevel level;
     private Set<Contact> contacts;
     private String createdBy;

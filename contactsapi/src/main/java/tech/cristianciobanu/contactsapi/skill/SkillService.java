@@ -15,10 +15,14 @@ public class SkillService {
     private final SkillMapper skillMapper;
 
 
-    public List<SkillDto> findAll(){
-        List<SkillDto> skillList = new ArrayList<>();
-        skillRepository.findAll().forEach(skill -> skillList.add(skillMapper.skillToSkillDto(skill)));
-        return skillList;
+    public List<SkillDto> findAll(String name){
+        if (name == null){
+            List<SkillDto> skillList = new ArrayList<>();
+            skillRepository.findAll().forEach(skill -> skillList.add(skillMapper.skillToSkillDto(skill)));
+            return skillList;
+        } else{
+            return findAllByName(name);
+        }
     }
 
     public Optional<SkillDto> findById(UUID id){

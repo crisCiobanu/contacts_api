@@ -1,5 +1,6 @@
 package tech.cristianciobanu.contactsapi.auth;
 
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +14,15 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
+    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String username;
+    @NotNull
+    @Email
     private String email;
+    @NotNull
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     private String password;
     private Set<Role> roles;
 }

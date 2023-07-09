@@ -22,10 +22,14 @@ public class ContactService {
     private final JpaUserDetailsService userDetailsService;
     private final ContactMapper contactMapper;
 
-    public List<ContactDto> findAll() {
-        List<ContactDto> contactList = new ArrayList<>();
-        contactRepository.findAll().forEach(contact -> contactList.add(contactMapper.contactToContactDto(contact)));
-        return contactList;
+    public List<ContactDto> findAll(String name) {
+        if (name == null){
+            List<ContactDto> contactList = new ArrayList<>();
+            contactRepository.findAll().forEach(contact -> contactList.add(contactMapper.contactToContactDto(contact)));
+            return contactList;
+        } else {
+            return findAllByName(name);
+        }
     }
 
     public Optional<ContactDto> findById(UUID id) {
