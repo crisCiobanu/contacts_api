@@ -24,12 +24,13 @@ public class Skill {
     private String name;
     @Enumerated(EnumType.STRING)
     private SkillLevel level;
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
             mappedBy = "skills")
-    @JsonIgnore
     private Set<Contact> contacts = new HashSet<>();
+    private String createdBy;
 }

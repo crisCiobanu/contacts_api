@@ -1,11 +1,13 @@
 package tech.cristianciobanu.contactsapi.contact;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tech.cristianciobanu.contactsapi.skill.Skill;
+import tech.cristianciobanu.contactsapi.user.User;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,4 +38,6 @@ public class Contact {
             joinColumns = { @JoinColumn(name = "contact_id") },
             inverseJoinColumns = { @JoinColumn(name = "skill_id") })
     private Set<Skill> skills = new HashSet<>();
+
+    private String createdBy;
 }

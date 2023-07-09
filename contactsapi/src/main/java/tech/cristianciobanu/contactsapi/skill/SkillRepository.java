@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface SkillRepository extends CrudRepository<Skill, UUID> {
+    Skill findSkillByNameContainingIgnoreCaseAndLevel(String name, SkillLevel level);
     List<Skill> findByNameContainingIgnoreCase(String name);
 }

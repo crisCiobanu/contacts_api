@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import tech.cristianciobanu.contactsapi.skill.SkillDto;
+import tech.cristianciobanu.contactsapi.auth.exception.NotAuthorizedException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -63,25 +63,37 @@ public class ContactController {
             @PathVariable("id") UUID id,
             @RequestBody ContactDto updatedContact
     ){
-        Optional<ContactDto> updated = contactService.update(id, updatedContact);
+        try {
+            Optional<ContactDto> updated = contactService.update(id, updatedContact);
 
-        return updated
-                .map(skill -> ResponseEntity.ok().body(skill))
-                .orElseGet(() -> {
-                    ContactDto createdContact = contactService.create(updatedContact);
-                    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                            .path("/{id}")
-                            .buildAndExpand(createdContact.getId())
-                            .toUri();
-                    return ResponseEntity.created(location).body(createdContact);
-                });
+            return updated
+                    .map(skill -> ResponseEntity.ok().body(skill))
+                    .orElseGet(() -> {
+                        ContactDto createdContact = contactService.create(updatedContact);
+                        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(createdContact.getId())
+                                .toUri();
+                        return ResponseEntity.created(location).body(createdContact);
+                    });
+        } catch (NotAuthorizedException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ContactDto> deleteContact(@PathVariable("id") UUID id){
-        contactService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            contactService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

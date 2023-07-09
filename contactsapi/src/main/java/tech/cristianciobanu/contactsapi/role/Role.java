@@ -1,15 +1,15 @@
 package tech.cristianciobanu.contactsapi.role;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import tech.cristianciobanu.contactsapi.user.User;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,4 +22,7 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
 }

@@ -1,11 +1,13 @@
 package tech.cristianciobanu.contactsapi.contact;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tech.cristianciobanu.contactsapi.skill.Skill;
+import tech.cristianciobanu.contactsapi.user.User;
 
 import java.util.Set;
 import java.util.UUID;
@@ -23,4 +25,5 @@ public class ContactDto {
     private String email;
     private String phoneNumber;
     private Set<Skill> skills;
+    private String createdBy;
 }

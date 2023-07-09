@@ -21,4 +21,5 @@ public class SkillDto {
     private String name;
     private SkillLevel level;
     private Set<Contact> contacts;
+    private String createdBy;
 }

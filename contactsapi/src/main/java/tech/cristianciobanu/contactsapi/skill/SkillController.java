@@ -1,8 +1,12 @@
 package tech.cristianciobanu.contactsapi.skill;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.cristianciobanu.contactsapi.auth.exception.NotAuthorizedException;
+import tech.cristianciobanu.contactsapi.skill.exception.SkillUsedByAnotherContact;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -76,8 +80,16 @@ public class SkillController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SkillDto> deleteSkill(@PathVariable("id") UUID id){
-        skillService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            skillService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (SkillUsedByAnotherContact e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }
