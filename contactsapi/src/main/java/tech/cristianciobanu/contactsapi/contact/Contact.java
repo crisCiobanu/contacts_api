@@ -1,14 +1,11 @@
 package tech.cristianciobanu.contactsapi.contact;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tech.cristianciobanu.contactsapi.skill.Skill;
-import tech.cristianciobanu.contactsapi.user.User;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

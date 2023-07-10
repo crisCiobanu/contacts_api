@@ -1,5 +1,5 @@
 package tech.cristianciobanu.contactsapi.skill;
 
-public enum SkillLevel {
+public enum ESkillLevel {
     BEGINNER, COMPETENT, ADVANCED, PROFICIENT, EXPERT
 }

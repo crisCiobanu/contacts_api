@@ -27,6 +27,7 @@ public class ContactDto {
     @Size(min = 5, max = 60)
     private String fullName;
     @NotNull
+    @NotBlank
     private String address;
     @NotNull
     @Email

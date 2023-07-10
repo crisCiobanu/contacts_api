@@ -1,17 +1,6 @@
 version: "3"
 services:
 
-#  svelte:
-#    container_name: svelte
-#    depends_on:
-#      - backend
-#    ports:
-#      - "8080:8080"
-#    build: ./svelte
-#    restart: always
-#    networks:
-#      - postgres
-
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -21,33 +10,15 @@ services:
       POSTGRES_PASSWORD: super_secret_password
       POSTGRES_USER: super_user
     restart: always
-    networks:
+  app:
+    depends_on:
       - postgres
-
-#  pgadmin:
-#    links:
-#      - postgres:postgres
-#    container_name: pgadmin
-#    image: dpage/pgadmin4
-#    ports:
-#      - "5050:80"
-#    restart: always
-#    networks:
-#      - postgres
-
-#  backend:
-#    container_name: backend
-#    depends_on:
-#      - postgres
-#    ports:
-#      - "3000:3000"
-#    env_file:
-#      - .env
-#    build: ./backend
-#    restart: always
-#    networks:
-#      - postgres
-
-networks:
-  postgres:
-    driver: bridge
+    build: ./contactsapi
+    restart: on-failure
+    ports:
+      - "8000:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=super_user
+      - SPRING_DATASOURCE_PASSWORD=super_secret_password
+    tty: true

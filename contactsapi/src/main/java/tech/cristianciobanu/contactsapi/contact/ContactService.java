@@ -2,14 +2,10 @@ package tech.cristianciobanu.contactsapi.contact;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tech.cristianciobanu.contactsapi.auth.exception.NotAuthorizedException;
 import tech.cristianciobanu.contactsapi.skill.Skill;
-import tech.cristianciobanu.contactsapi.skill.SkillDto;
 import tech.cristianciobanu.contactsapi.skill.SkillRepository;
-import tech.cristianciobanu.contactsapi.user.JpaUserDetailsService;
-import tech.cristianciobanu.contactsapi.user.UserRepository;
 
 import java.util.*;
 
@@ -18,8 +14,6 @@ import java.util.*;
 public class ContactService {
     private final ContactRepository contactRepository;
     private final SkillRepository skillRepository;
-    private final UserRepository userRepository;
-    private final JpaUserDetailsService userDetailsService;
     private final ContactMapper contactMapper;
 
     public List<ContactDto> findAll(String name) {

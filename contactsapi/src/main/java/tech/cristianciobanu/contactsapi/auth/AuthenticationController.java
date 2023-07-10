@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +26,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     @Operation(
             summary = "Register the user",
-            description = "Register a User with it's username, email and password, return a valid jwt authentication token.")
+            description = "Register a User with it's username, email and password, return a valid jwt authentication token" +
+                    ", returns 409 if the username or email is already used")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(), mediaType = "jwt") }),
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
@@ -45,7 +45,8 @@ public class AuthenticationController {
     }
     @Operation(
             summary = "Authenticate the user",
-            description = "Authenticate the User with it's username and password, return a valid jwt authentication token.")
+            description = "Authenticate the User with it's username and password, return a valid jwt authentication token" +
+                    ", returns 404 if the user is not found")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(), mediaType = "jwt") }),
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),

@@ -72,7 +72,7 @@ public class SkillService {
         return new Skill(
                 oldSkill.getId(),
                 newSkill.getName(),
-                newSkill.getLevel(),
+                ESkillLevel.valueOf(newSkill.getLevel()),
                 new HashSet<>(newSkill.getContacts()),
                 oldSkill.getCreatedBy()
         );

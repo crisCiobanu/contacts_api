@@ -23,7 +23,7 @@ public class Skill {
     private UUID id;
     private String name;
     @Enumerated(EnumType.STRING)
-    private SkillLevel level;
+    private ESkillLevel level;
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {

@@ -1,7 +1,5 @@
 package tech.cristianciobanu.contactsapi.skill;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tech.cristianciobanu.contactsapi.contact.Contact;
+import tech.cristianciobanu.contactsapi.validation.skill.SkillLevel;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,8 +24,8 @@ public class SkillDto {
     @Size(min = 2, max = 20)
     private String name;
     @NotNull
-    @NotBlank
-    private SkillLevel level;
+    @SkillLevel
+    private String level;
     private Set<Contact> contacts;
     private String createdBy;
 }

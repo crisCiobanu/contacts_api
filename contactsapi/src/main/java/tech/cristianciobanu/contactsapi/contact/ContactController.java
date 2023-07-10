@@ -13,10 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.cristianciobanu.contactsapi.auth.exception.NotAuthorizedException;
-import tech.cristianciobanu.contactsapi.skill.SkillDto;
+
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +47,12 @@ public class ContactController {
         }
     }
 
+    @Operation(
+            summary = "Retrieve contact",
+            description = "Retrieve a contact by it's id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ContactDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/{id}")
     public ResponseEntity<ContactDto> findContactById(@PathVariable("id") UUID id){
         try {
@@ -58,6 +63,12 @@ public class ContactController {
         }
     }
 
+    @Operation(
+            summary = "Create contact",
+            description = "Create a new contact")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ContactDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping
     public ResponseEntity<ContactDto> createContact(@Valid @RequestBody ContactDto contact){
         try {
@@ -72,6 +83,14 @@ public class ContactController {
         }
     }
 
+    @Operation(
+            summary = "Update contact",
+            description = "Update an existing contact using it's id, if the contact is not found a new one will be created" +
+                    ", accessible just for the user who created the contact, otherwise returns 401")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ContactDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "401", content = { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PutMapping("/{id}")
     public ResponseEntity<ContactDto> updateContact(
             @PathVariable("id") UUID id,
@@ -97,6 +116,13 @@ public class ContactController {
         }
     }
 
+    @Operation(
+            summary = "Delete contact",
+            description = "Delete an existing contact using it's id, accessible just for the user who created the contact, otherwise returns 401")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = ContactDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "401", content = { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @DeleteMapping("/{id}")
     public ResponseEntity<ContactDto> deleteContact(@PathVariable("id") UUID id){
         try {

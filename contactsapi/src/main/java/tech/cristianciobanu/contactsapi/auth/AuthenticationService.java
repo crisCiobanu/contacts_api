@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.cristianciobanu.contactsapi.auth.exception.UserAlreadyExistsException;
-import tech.cristianciobanu.contactsapi.role.ERole;
 import tech.cristianciobanu.contactsapi.role.Role;
 import tech.cristianciobanu.contactsapi.role.RoleRepository;
 import tech.cristianciobanu.contactsapi.security.jwt.JwtService;
@@ -17,7 +16,6 @@ import tech.cristianciobanu.contactsapi.user.UserRepository;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

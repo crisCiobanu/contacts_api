@@ -22,7 +22,7 @@ public class RegisterRequest {
     @Email
     private String email;
     @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "The password should be at least 8 characters long and should contain at least an uppercase, a lowercase letter, and a special character")
     private String password;
     private Set<Role> roles;
 }
