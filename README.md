@@ -17,5 +17,5 @@ like person, skills...
 > The `authenticate` route will return a **JWT** authentication token that should be attached as a bearer token to every http request in order to access the protected routes.
 
 ## SWAGGER
-While the application is running the API Documentation is available at `http://localhost:8000/swagger-ui/index.html`
+While the application is running, API Documentation is available at `http://localhost:8000/swagger-ui/index.html`
 
