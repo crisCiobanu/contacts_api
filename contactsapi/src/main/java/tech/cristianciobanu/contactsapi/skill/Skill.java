@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tech.cristianciobanu.contactsapi.contact.Contact;
+import tech.cristianciobanu.contactsapi.user.User;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,5 +33,21 @@ public class Skill {
             },
             mappedBy = "skills")
     private Set<Contact> contacts = new HashSet<>();
-    private String createdBy;
+//    private String createdBy;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User owner;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Skill )) return false;
+        return id != null && id.equals(((Skill) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

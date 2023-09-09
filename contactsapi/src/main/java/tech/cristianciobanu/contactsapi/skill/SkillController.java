@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/skills")
-@Tag(name = "Skills", description = "Skill management APIs")
+@Tag(name = "Skills", description = "Skill.java management APIs")
 public class SkillController {
     private final SkillService skillService;
 

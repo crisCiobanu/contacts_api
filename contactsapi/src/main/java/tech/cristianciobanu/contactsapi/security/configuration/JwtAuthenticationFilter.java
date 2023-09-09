@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tech.cristianciobanu.contactsapi.security.jwt.JwtService;
 import tech.cristianciobanu.contactsapi.user.JpaUserDetailsService;
+import tech.cristianciobanu.contactsapi.user.UserRepository;
 
 import java.io.IOException;
 

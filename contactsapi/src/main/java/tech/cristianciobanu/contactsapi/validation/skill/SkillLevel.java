@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = SkillLevelValidator.class)
 public @interface SkillLevel {
-    String message() default "Skill level should be one of <BEGINNER, COMPETENT, ADVANCED, PROFICIENT, EXPERT>";
+    String message() default "Skill.java level should be one of <BEGINNER, COMPETENT, ADVANCED, PROFICIENT, EXPERT>";
 
     Class<?>[] groups() default {};
 

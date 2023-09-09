@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.cristianciobanu.contactsapi.auth.exception.NotAuthorizedException;
 import tech.cristianciobanu.contactsapi.skill.exception.SkillUsedByAnotherContact;
+import tech.cristianciobanu.contactsapi.user.UserRepository;
 
 import java.util.*;
 
@@ -13,6 +14,8 @@ import java.util.*;
 public class SkillService {
     private final SkillRepository skillRepository;
     private final SkillMapper skillMapper;
+
+    private final UserRepository userRepository;
 
 
     public List<SkillDto> findAll(String name){
@@ -35,11 +38,14 @@ public class SkillService {
         return skillList;
     }
 
-    public SkillDto create(SkillDto skill){
+    public SkillDto create(SkillDto skillDto){
         var loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        skill.setCreatedBy(loggedUsername);
+        var loggedUser = userRepository.findByUsername(loggedUsername).orElseThrow(RuntimeException::new);
 
-        Skill createdSkill = skillRepository.save(skillMapper.skillDtoToSkill(skill));
+        Skill skill = skillMapper.skillDtoToSkill(skillDto);
+        loggedUser.addSkill(skill);
+
+        Skill createdSkill = skillRepository.save(skill);
         return skillMapper.skillToSkillDto(createdSkill);
     }
 
@@ -48,7 +54,7 @@ public class SkillService {
 
         return skillRepository.findById(id)
                 .map(foundSkill -> {
-                    if (!foundSkill.getCreatedBy().equals(loggedUsername)){
+                    if (!foundSkill.getOwner().getUsername().equals(loggedUsername)){
                         throw new NotAuthorizedException("User is not authorized to modify this skill");
                     }
                     Skill newSkill = updateSkillWith(foundSkill, updatedSkill);
@@ -57,14 +63,17 @@ public class SkillService {
 
     public void delete(UUID id){
         var loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        var loggedUser = userRepository.findByUsername(loggedUsername).orElseThrow(RuntimeException::new);
+
         var foundSkill = skillRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Skill not found"));
-        if (!foundSkill.getCreatedBy().equals(loggedUsername)){
+                .orElseThrow(() -> new RuntimeException("Skill.java not found"));
+        if (!foundSkill.getOwner().getUsername().equals(loggedUsername)){
             throw new NotAuthorizedException("User is not authorized to delete this skill");
         }
         if (!foundSkill.getContacts().isEmpty()){
-            throw new SkillUsedByAnotherContact("Skill is used by other contacts");
+            throw new SkillUsedByAnotherContact("Skill.java is used by other contacts");
         }
+        loggedUser.removeSkill(foundSkill);
         skillRepository.deleteById(id);
     }
 
@@ -74,7 +83,8 @@ public class SkillService {
                 newSkill.getName(),
                 ESkillLevel.valueOf(newSkill.getLevel()),
                 new HashSet<>(newSkill.getContacts()),
-                oldSkill.getCreatedBy()
+//                oldSkill.getCreatedBy(),
+                oldSkill.getOwner()
         );
     }
 

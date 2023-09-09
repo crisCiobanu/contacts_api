@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import tech.cristianciobanu.contactsapi.auth.exception.NotAuthorizedException;
 import tech.cristianciobanu.contactsapi.skill.Skill;
 import tech.cristianciobanu.contactsapi.skill.SkillRepository;
+import tech.cristianciobanu.contactsapi.user.UserRepository;
 
 import java.util.*;
 
@@ -15,6 +16,8 @@ public class ContactService {
     private final ContactRepository contactRepository;
     private final SkillRepository skillRepository;
     private final ContactMapper contactMapper;
+
+    private final UserRepository userRepository;
 
     public List<ContactDto> findAll(String name) {
         if (name == null){
@@ -38,12 +41,16 @@ public class ContactService {
         return contactList;
     }
 
-    public ContactDto create(ContactDto contact) {
+    public ContactDto create(ContactDto contactDTO) {
         var loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        contact.setCreatedBy(loggedUsername);
-        contact.setSkills(this.setContactSkills(contact));
+        var loggedUser = userRepository.findByUsername(loggedUsername).orElseThrow(RuntimeException::new);
 
-        Contact createdContact = contactRepository.save(contactMapper.contactDtoToContact(contact));
+        contactDTO.setSkills(this.setContactSkills(contactDTO));
+
+        Contact contact = contactMapper.contactDtoToContact(contactDTO);
+        loggedUser.addContact(contact);
+
+        Contact createdContact = contactRepository.save(contact);
         return contactMapper.contactToContactDto(createdContact);
     }
 
@@ -51,7 +58,10 @@ public class ContactService {
         var loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         return contactRepository.findById(id)
                 .map(foundContact -> {
-                    if (!foundContact.getCreatedBy().equals(loggedUsername)){
+//                    if (!foundContact.getCreatedBy().equals(loggedUsername)){
+//                        throw new NotAuthorizedException("User is not authorized to modify this contact");
+//                    }
+                    if (!foundContact.getOwner().getUsername().equals(loggedUsername)){
                         throw new NotAuthorizedException("User is not authorized to modify this contact");
                     }
                     Contact newContact = updateContactWith(foundContact, updatedContact);
@@ -60,11 +70,13 @@ public class ContactService {
 
     public void delete(UUID id) {
         var loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        var loggedUser = userRepository.findByUsername(loggedUsername).orElseThrow(RuntimeException::new);
         var foundContact = contactRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Contact not found"));
-        if (!foundContact.getCreatedBy().equals(loggedUsername)){
+        if (!foundContact.getOwner().getUsername().equals(loggedUsername)){
             throw new NotAuthorizedException("User is not authorized to modify this contact");
         }
+        loggedUser.removeContact(foundContact);
         contactRepository.deleteById(id);
     }
 
@@ -78,19 +90,22 @@ public class ContactService {
                 newContact.getEmail(),
                 newContact.getPhoneNumber(),
                 setContactSkills(newContact),
-                oldContact.getCreatedBy()
+//                oldContact.getCreatedBy(),
+                oldContact.getOwner()
         );
     }
 
     private Set<Skill> setContactSkills(ContactDto contact){
         var loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        var loggedUser = userRepository.findByUsername(loggedUsername).orElseThrow(RuntimeException::new);
         HashSet<Skill> skills = new HashSet<>();
         contact.getSkills().forEach(skill -> {
             Skill foundSkill = this.skillRepository.findSkillByNameContainingIgnoreCaseAndLevel(skill.getName(), skill.getLevel());
             if (foundSkill != null) {
                 skills.add(foundSkill);
             } else {
-                skill.setCreatedBy(loggedUsername);
+                loggedUser.addSkill(skill);
+//                skill.setCreatedBy(loggedUsername);
                 skills.add(this.skillRepository.save(skill));
             }
         });

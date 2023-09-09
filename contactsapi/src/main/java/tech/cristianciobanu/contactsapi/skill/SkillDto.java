@@ -27,5 +27,5 @@ public class SkillDto {
     @SkillLevel
     private String level;
     private Set<Contact> contacts;
-    private String createdBy;
+//    private String createdBy;
 }

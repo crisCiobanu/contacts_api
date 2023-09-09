@@ -3,6 +3,7 @@ package tech.cristianciobanu.contactsapi.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -51,6 +52,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/**").permitAll()
                             .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/role/admin").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/role/user").hasAnyRole("ADMIN", "USER")
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/role/user").permitAll()
                                 .anyRequest().authenticated()
 //                        auth.anyRequest().permitAll()
                 );
